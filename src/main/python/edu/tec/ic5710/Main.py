@@ -6,8 +6,9 @@ from LexicalAnalyser import Scanner
 # Comando de ejecucion: python3 Main.py <programa.txt>
 
 # Obtiene el path actual donde se encuentra el Main.py, este directorio lo separa y lo mete en una lista
-path = os.getcwd().split("\\")
 
+if os.name=='posix': path = os.getcwd().split("/")
+else : path = os.getcwd().split("\\")
 # Este va ser el nuevo path para buscar las pruebas
 new_path = ""
 
