@@ -37,29 +37,35 @@ class Scanner:
         # Prepara la gramatica para hacer match
         self.grammar = re.compile(self.grammar)
 
-        matches = self.grammar.finditer(self.program)
+        lines = re.split(r'\n', self.program)
 
+        
         # Recorre los matches encontrados para asignarles su respectivo tipo.
-        for match in matches:
-            if type(match.group(1)) == str:
-                self.founded_tokens += [["INTEGER", match.group(1)]]
-            elif type(match.group(2)) == str:
-                self.founded_tokens += [["PRINT", match.group(2)]]
-            elif type(match.group(3)) == str:
-                self.founded_tokens += [["LEFT_PARENTHESIS", match.group(3)]]
-            elif type(match.group(4)) == str:
-                self.founded_tokens += [["RIGHT_PARENTHESIS", match.group(4)]]
-            elif type(match.group(5)) == str:
-                self.founded_tokens += [["SEMI_COLON", match.group(5)]]
-            elif type(match.group(6)) == str:
-                self.founded_tokens += [["OPERATOR", match.group(6)]]
-            elif type(match.group(7)) == str:
-                self.founded_tokens += [["IDENTIFIER", match.group(7)]]
-            elif type(match.group(8)) == str:
-                self.founded_tokens += [["ERROR", match.group(8)]]
-            elif type(match.group(9)) == str:
-                print("ERROR: Token not recognized." + match.group(9))
-                self.error = True
+        for line in lines:
+
+            words = re.split(r' ', line)
+            for word in words:
+                if re.fullmatch(self.integer_token, word):
+                    self.founded_tokens += [["INTEGER", line]]
+                elif re.fullmatch(self.print_token, word):
+                    self.founded_tokens += [["PRINT", line]]
+                elif re.fullmatch(self.Left_parenthesis_token, word):
+                    self.founded_tokens += [["LEFT_PARENTHESIS", line]]
+                elif re.fullmatch(self.Right_parenthesis_token, word):
+                    self.founded_tokens += [["RIGHT_PARENTHESIS", line]]
+                elif re.fullmatch(self.semi_colon_token, word):
+                    self.founded_tokens += [["SEMI_COLON", line]]
+                elif re.fullmatch(self.operator_token, word):
+                    self.founded_tokens += [["OPERATOR", line]]
+                elif re.fullmatch(self.id_token, word):
+                    self.founded_tokens += [["IDENTIFIER", line]]
+                elif re.fullmatch(self.error_token, word):
+                    self.founded_tokens += [["ERROR", line]]
+                    raise Exception("ERROR: Token " + word + " in line " + str(lines.index(line)+1) + " not recognized.")
+                else:
+                    print("ERROR: Token not recognized. \t '" + word + "'")
+                    self.error = True
+
 
     def show_tokens(self):
 
