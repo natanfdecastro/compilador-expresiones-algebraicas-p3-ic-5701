@@ -31,7 +31,7 @@ class Scanner:
 
         self.find_tokens()
         self.show_tokens()
-
+    # Es necesario comentar
     def find_tokens(self):
 
         # Imprime el programa ingresado.
