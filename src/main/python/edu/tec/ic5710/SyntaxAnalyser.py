@@ -18,6 +18,7 @@ class SintaxAnalyser:
 
         self.founded_tokens = founded_tokens
         self.founded_tokens_len = len(founded_tokens)
+
         self.parse()
 
     def parse(self):
@@ -27,7 +28,8 @@ class SintaxAnalyser:
         founded_token_pointer = 0
 
         if self.parse_program_root_node(founded_token_pointer):
-            print("_Analysis_")
+
+            self.print_abstract_syntax_tree()
             # semantic_analyser = SemanticAnalyser(self.abstract_syntax_tree)
             # semantic_analysis_report = semantic_analyser.analyse_semantics()
 
@@ -43,6 +45,7 @@ class SintaxAnalyser:
         sub_tree, new_pointer = self.parse_production(founded_token_pointer)
 
         if check_parse(sub_tree):
+
             self.abstract_syntax_tree.add_node(sub_tree)
             founded_token_pointer = new_pointer
             if founded_token_pointer == self.founded_tokens_len:
@@ -83,7 +86,6 @@ class SintaxAnalyser:
             succesful_parse = True
         else:
             sub_tree, new_pointer = self.parse_assignation(founded_token_pointer)
-            self.print_abstract_syntax_tree()
 
             if check_parse(sub_tree):
                 founded_token_pointer = new_pointer
@@ -98,10 +100,8 @@ class SintaxAnalyser:
 
         if succesful_parse:
             print(sub_tree)
-            # self.print_abstract_syntax_tree()
             return sub_tree, founded_token_pointer
         else:
-            print("Error")
             self.calculate_error(founded_token_pointer)
             return [], -1
 
@@ -130,7 +130,7 @@ class SintaxAnalyser:
 
         sub_tree = AssignationNode("ASSIGNATION", "ASSIGNATION", [])
         new_founded_token_pointer = founded_token_pointer
-        print("_Assignation_")
+
         if self.compare_types("IDENTIFIER", founded_token_pointer):
             sub_tree.add_node(self.create_node(founded_token_pointer))
             founded_token_pointer += 1
@@ -225,13 +225,13 @@ class SintaxAnalyser:
 
         abstract_syntax_tree_list = [self.abstract_syntax_tree]
         str_abstract_syntax_tree = ""
-
+        print(len(abstract_syntax_tree_list))
         while abstract_syntax_tree_list:
 
-            str_abstract_syntax_tree += abstract_syntax_tree_list[0].node_type + "\n---> "
+            str_abstract_syntax_tree += "[ " + abstract_syntax_tree_list[0].node_type + " ]" + "\n|---> "
 
             for child in abstract_syntax_tree_list[0].children_nodes:
-                str_abstract_syntax_tree += child.node_type + " "
+                str_abstract_syntax_tree += "( " + child.node_type + " )" + " "
                 abstract_syntax_tree_list += [child]
 
             str_abstract_syntax_tree += "\n\n"
