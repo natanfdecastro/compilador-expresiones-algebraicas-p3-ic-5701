@@ -9,8 +9,6 @@ from src.main.python.edu.tec.ic5710.SyntaxAnalyser import SintaxAnalyser
 # Obtiene el path actual donde se encuentra el Main.py, este directorio lo separa y lo mete en una lista
 
 # Valida el sistema operativo para adaptar el path de busqueda
-
-
 if os.name == 'posix':
     path = os.getcwd().split("/")
 else:

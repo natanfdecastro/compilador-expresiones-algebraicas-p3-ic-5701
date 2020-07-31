@@ -31,6 +31,7 @@ class Scanner:
 
         self.find_tokens()
         self.show_tokens()
+
     # Es necesario comentar
     def find_tokens(self):
 
@@ -78,4 +79,6 @@ class Scanner:
         for token in self.founded_tokens:
             print(str(count) + " " + str(token))
             count += 1
+
+        # Useful comment
         print()
