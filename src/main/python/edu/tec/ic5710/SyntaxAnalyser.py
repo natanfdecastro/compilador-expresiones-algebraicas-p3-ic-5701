@@ -137,7 +137,7 @@ class SintaxAnalyser:
 
             if self.compare_types("EQUAL_ASSIGNATION", founded_token_pointer):
                 founded_token_pointer += 1
-                sub_tree_aux, new_founded_token_pointer = self.parse_algebraic_operation(founded_token_pointer)
+                sub_tree_aux, new_founded_token_pointer = self.parse_expression(founded_token_pointer)
 
                 if check_parse(sub_tree_aux):
                     founded_token_pointer = new_founded_token_pointer
@@ -149,10 +149,19 @@ class SintaxAnalyser:
         self.calculate_error(founded_token_pointer)
         return [], -1
 
-    def parse_algebraic_operation(self, founded_token_pointer):
+    def parse_expression(self, founded_token_pointer):
 
-        print("_Algebraic_")
-        sub_tree = AlgebraicOperationNode("ALGEBRAIC_OPERATION", "ALGEBRAIC_OPERATION", [])
+        print("_Expression_")
+        sub_tree = ExpressionNode("EXPRESSION", "EXPRESSION", [])
+
+        if self.compare_types("LEFT_PARENTHESIS"): # z = ( 300 + y ) * x  - 50 ;
+            founded_token_pointer += 1
+            self.parse_factor(founded_token_pointer)
+
+            if self.compare_types("RIGHT_PARENTHESIS"):
+                founded_token_pointer += 1
+            else:
+                self.calculate_error(founded_token_pointer)
 
         if self.compare_types("INTEGER", founded_token_pointer) or self.compare_types("IDENTIFIER",
                                                                                       founded_token_pointer):
@@ -173,6 +182,9 @@ class SintaxAnalyser:
             return sub_tree, founded_token_pointer
         self.calculate_error(founded_token_pointer)
         return [], -1
+
+    def parse_factor(self, founded_token_pointer):
+        pass
 
     def parse_print(self, founded_token_pointer):
         sub_tree = PrintProductionNode("PRINT_PRODUCTION", "PRINT_PRODUCTION", [])
@@ -239,3 +251,5 @@ class SintaxAnalyser:
 
         print("ABSTRACT SYNTAX TREE: \n")
         print(str_abstract_syntax_tree)
+
+

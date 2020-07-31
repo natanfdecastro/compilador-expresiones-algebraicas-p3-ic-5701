@@ -49,13 +49,13 @@ class AssignationNode(AbstractSyntaxTree):
         return semantic_checker.visit_assignation_node(self)
 
 
-class AlgebraicOperationNode(AbstractSyntaxTree):
+class ExpressionNode(AbstractSyntaxTree):
 
     def init(self, node_type, node_value, children_nodes):
         AbstractSyntaxTree.__init__(self, node_type, node_value, children_nodes)
 
     def visit(self, semantic_checker):
-        return semantic_checker.visit_algebraic_operation_node(self)
+        return semantic_checker.visit_expression_node(self)
 
 
 class IdentifierNode(AbstractSyntaxTree):
