@@ -1,13 +1,6 @@
 from src.main.python.edu.tec.ic5710.AbstractSyntaxTree import *
 
 
-def check_parse(sub_tree):
-    if not sub_tree:
-        return False
-    else:
-        return True
-
-
 class SintaxAnalyser:
     founded_tokens = []
     abstract_syntax_tree = 0
@@ -42,7 +35,7 @@ class SintaxAnalyser:
 
         sub_tree, new_pointer = self.parse_production(founded_token_pointer)
 
-        if check_parse(sub_tree):
+        if self.check_parse(sub_tree):
             self.abstract_syntax_tree.add_node(sub_tree)
             founded_token_pointer = new_pointer
             if founded_token_pointer == self.founded_tokens_len:
@@ -76,28 +69,32 @@ class SintaxAnalyser:
         new_pointer = founded_token_pointer
         succesful_parse = False
 
-        self.parse_declaration(founded_token_pointer)
+        sub_tree, new_pointer = self.parse_declaration(founded_token_pointer)
 
-        if check_parse(sub_tree):
+        if self.check_parse(sub_tree):
             founded_token_pointer = new_pointer
             succesful_parse = True
         else:
-            self.parse_assignation(founded_token_pointer)
+            sub_tree, new_pointer = self.parse_assignation(founded_token_pointer)
+            self.print_abstract_syntax_tree()
 
-            if check_parse(sub_tree):
+            if self.check_parse(sub_tree):
                 founded_token_pointer = new_pointer
                 succesful_parse = True
             else:
-                print("PROHIBIDO")
-                self.parse_print(founded_token_pointer)
 
-                if check_parse(sub_tree):
+                sub_tree, new_pointer = self.parse_print(founded_token_pointer)
+
+                if self.check_parse(sub_tree):
                     founded_token_pointer = new_pointer
                     succesful_parse = True
 
         if succesful_parse:
+            print(sub_tree)
+            # self.print_abstract_syntax_tree()
             return sub_tree, founded_token_pointer
         else:
+            print("Error")
             self.calculate_error(founded_token_pointer)
             return [], -1
 
@@ -115,7 +112,7 @@ class SintaxAnalyser:
         print("_Declaration_")
         sub_tree_aux, new_founded_token_pointer = self.parse_assignation(founded_token_pointer)
 
-        if check_parse(sub_tree_aux):
+        if self.check_parse(sub_tree_aux):
             puntero_token = new_founded_token_pointer
             sub_tree.add_node(sub_tree_aux)
             return sub_tree, founded_token_pointer
@@ -135,7 +132,7 @@ class SintaxAnalyser:
                 founded_token_pointer += 1
                 sub_tree_aux, new_founded_token_pointer = self.parse_algebraic_operation(founded_token_pointer)
 
-                if check_parse(sub_tree_aux):
+                if self.check_parse(sub_tree_aux):
                     founded_token_pointer = new_founded_token_pointer
                     sub_tree.add_node(sub_tree_aux)
                     if self.compare_types("SEMI_COLON", founded_token_pointer):
@@ -177,18 +174,14 @@ class SintaxAnalyser:
             sub_tree.add_node(self.create_node(founded_token_pointer))
             founded_token_pointer += 1
 
-            if self.compare_types("LEFT_PARENTHESIS", founded_token_pointer):
+            if self.compare_types("IDENTIFIER", founded_token_pointer):
+                sub_tree.add_node(self.create_node(founded_token_pointer))
                 founded_token_pointer += 1
 
-                if self.compare_types("IDENTIFIER", founded_token_pointer):
-                    sub_tree.add_node(self.create_node(founded_token_pointer))
-
-                    if self.compare_types("RIGHT_PARENTHESIS", founded_token_pointer):
-                        founded_token_pointer += 1
-
-                        if self.compare_types("SEMI_COLON", founded_token_pointer):
-                            founded_token_pointer += 1
-                            return sub_tree, founded_token_pointer
+                if self.compare_types("SEMI_COLON", founded_token_pointer):
+                    founded_token_pointer += 1
+                    print("Sub_tree: " + str(sub_tree))
+                    return sub_tree, founded_token_pointer
         self.calculate_error(founded_token_pointer)
         return [], -1
 
@@ -221,17 +214,17 @@ class SintaxAnalyser:
         return node
 
     def print_abstract_syntax_tree(self):
-        print(self.abstract_syntax_tree.children_nodes[0].children_nodes[0].type)
+        # print(self.abstract_syntax_tree.children_nodes[0].children_nodes[0].type)
 
         abstract_syntax_tree_list = [self.abstract_syntax_tree]
         str_abstract_syntax_tree = ""
 
         while abstract_syntax_tree_list:
 
-            str_abstract_syntax_tree += abstract_syntax_tree_list[0].type + "\n---> "
+            str_abstract_syntax_tree += abstract_syntax_tree_list[0].node_type + "\n---> "
 
             for child in abstract_syntax_tree_list[0].children_nodes:
-                str_abstract_syntax_tree += child.type + " "
+                str_abstract_syntax_tree += child.node_type + " "
                 abstract_syntax_tree_list += [child]
 
             str_abstract_syntax_tree += "\n\n"
@@ -239,3 +232,9 @@ class SintaxAnalyser:
 
         print("ABSTRACT SYNTAX TREE: \n")
         print(str_abstract_syntax_tree)
+
+    def check_parse(self, sub_tree):
+        if not sub_tree:
+            return False
+        else:
+            return True
