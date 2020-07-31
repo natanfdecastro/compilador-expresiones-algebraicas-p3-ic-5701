@@ -1,6 +1,13 @@
 from src.main.python.edu.tec.ic5710.AbstractSyntaxTree import *
 
 
+def check_parse(sub_tree):
+    if not sub_tree:
+        return False
+    else:
+        return True
+
+
 class SintaxAnalyser:
     founded_tokens = []
     abstract_syntax_tree = 0
@@ -35,7 +42,7 @@ class SintaxAnalyser:
 
         sub_tree, new_pointer = self.parse_production(founded_token_pointer)
 
-        if self.check_parse(sub_tree):
+        if check_parse(sub_tree):
             self.abstract_syntax_tree.add_node(sub_tree)
             founded_token_pointer = new_pointer
             if founded_token_pointer == self.founded_tokens_len:
@@ -71,21 +78,21 @@ class SintaxAnalyser:
 
         sub_tree, new_pointer = self.parse_declaration(founded_token_pointer)
 
-        if self.check_parse(sub_tree):
+        if check_parse(sub_tree):
             founded_token_pointer = new_pointer
             succesful_parse = True
         else:
             sub_tree, new_pointer = self.parse_assignation(founded_token_pointer)
             self.print_abstract_syntax_tree()
 
-            if self.check_parse(sub_tree):
+            if check_parse(sub_tree):
                 founded_token_pointer = new_pointer
                 succesful_parse = True
             else:
 
                 sub_tree, new_pointer = self.parse_print(founded_token_pointer)
 
-                if self.check_parse(sub_tree):
+                if check_parse(sub_tree):
                     founded_token_pointer = new_pointer
                     succesful_parse = True
 
@@ -112,7 +119,7 @@ class SintaxAnalyser:
         print("_Declaration_")
         sub_tree_aux, new_founded_token_pointer = self.parse_assignation(founded_token_pointer)
 
-        if self.check_parse(sub_tree_aux):
+        if check_parse(sub_tree_aux):
             puntero_token = new_founded_token_pointer
             sub_tree.add_node(sub_tree_aux)
             return sub_tree, founded_token_pointer
@@ -132,7 +139,7 @@ class SintaxAnalyser:
                 founded_token_pointer += 1
                 sub_tree_aux, new_founded_token_pointer = self.parse_algebraic_operation(founded_token_pointer)
 
-                if self.check_parse(sub_tree_aux):
+                if check_parse(sub_tree_aux):
                     founded_token_pointer = new_founded_token_pointer
                     sub_tree.add_node(sub_tree_aux)
                     if self.compare_types("SEMI_COLON", founded_token_pointer):
@@ -232,9 +239,3 @@ class SintaxAnalyser:
 
         print("ABSTRACT SYNTAX TREE: \n")
         print(str_abstract_syntax_tree)
-
-    def check_parse(self, sub_tree):
-        if not sub_tree:
-            return False
-        else:
-            return True
