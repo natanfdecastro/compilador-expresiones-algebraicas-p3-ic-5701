@@ -188,8 +188,7 @@ class SintaxAnalyser:
 
             sub_tree.add_node(self.create_node(founded_token_pointer))
             founded_token_pointer += 1
-            while self.compare_types("OPERATOR", founded_token_pointer) or self.compare_types("RIGHT_PARENTHESIS",
-                                                                                              founded_token_pointer):
+            while self.compare_types("OPERATOR", founded_token_pointer) or (self.compare_types("RIGHT_PARENTHESIS", founded_token_pointer) and (not self.compare_types("SEMI_COLON", founded_token_pointer+1))):
 
                 sub_tree.add_node(self.create_node(founded_token_pointer))
                 founded_token_pointer += 1
@@ -206,7 +205,10 @@ class SintaxAnalyser:
                     sub_tree_aux, new_founded_token_pointer = self.parse_expression(founded_token_pointer)
 
                     if check_parse(sub_tree_aux):
+                        print("_HERE_")
                         founded_token_pointer = new_founded_token_pointer
+                        if self.compare_types("SEMI_COLON", founded_token_pointer+1):
+                            founded_token_pointer += 1
                         sub_tree.add_node(sub_tree_aux)
 
                     return sub_tree, founded_token_pointer
