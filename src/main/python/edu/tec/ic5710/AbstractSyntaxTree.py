@@ -58,6 +58,15 @@ class ExpressionNode(AbstractSyntaxTree):
         return semantic_checker.visit_expression_node(self)
 
 
+class FactorNode(AbstractSyntaxTree):
+
+    def init(self, node_type, node_value, children_nodes):
+        AbstractSyntaxTree.__init__(self, node_type, node_value, children_nodes)
+
+    def visit(self, semantic_checker):
+        return semantic_checker.visit_expression_node(self)
+
+
 class IdentifierNode(AbstractSyntaxTree):
 
     def init(self, node_type, node_value, children_nodes):
@@ -101,6 +110,24 @@ class OperatorNode(AbstractSyntaxTree):
 
     def visit(self, semantic_checker):
         return semantic_checker.visit_operator_node(self)
+
+
+class LeftParenthesisNode(AbstractSyntaxTree):
+
+    def init(self, node_type, node_value, children_nodes):
+        AbstractSyntaxTree.__init__(self, node_type, node_value, children_nodes)
+
+    def visit(self, semantic_checker):
+        return semantic_checker.visit_left_parenthesis_node(self)
+
+
+class RightParenthesisNode(AbstractSyntaxTree):
+
+    def init(self, node_type, node_value, children_nodes):
+        AbstractSyntaxTree.__init__(self, node_type, node_value, children_nodes)
+
+    def visit(self, semantic_checker):
+        return semantic_checker.visit_right_parenthesis_node(self)
 
 
 class PrintProductionNode(AbstractSyntaxTree):

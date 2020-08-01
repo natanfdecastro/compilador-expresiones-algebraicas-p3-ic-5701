@@ -140,6 +140,7 @@ class SintaxAnalyser:
                 sub_tree_aux, new_founded_token_pointer = self.parse_expression(founded_token_pointer)
 
                 if check_parse(sub_tree_aux):
+                    print("__SUCCESS__")
                     founded_token_pointer = new_founded_token_pointer
                     sub_tree.add_node(sub_tree_aux)
                     if self.compare_types("SEMI_COLON", founded_token_pointer):
@@ -154,24 +155,62 @@ class SintaxAnalyser:
         print("_Expression_")
         sub_tree = ExpressionNode("EXPRESSION", "EXPRESSION", [])
 
-        if self.compare_types("LEFT_PARENTHESIS"): # z = ( 300 + y ) * x  - 50 ;
-            founded_token_pointer += 1
-            self.parse_factor(founded_token_pointer)
+        sub_tree_aux, new_founded_token_pointer = self.parse_factor(founded_token_pointer)
+        if check_parse(sub_tree_aux):
 
-            if self.compare_types("RIGHT_PARENTHESIS"):
+            founded_token_pointer = new_founded_token_pointer
+            sub_tree.add_node(sub_tree_aux)
+
+        return sub_tree, founded_token_pointer
+
+    def parse_factor(self, founded_token_pointer):
+        print("_FACTOR_")
+        sub_tree = FactorNode("FACTOR", "FACTOR", [])
+
+        if self.compare_types("LEFT_PARENTHESIS", founded_token_pointer):
+            sub_tree.add_node(self.create_node(founded_token_pointer))
+            founded_token_pointer += 1
+
+            sub_tree_aux, new_founded_token_pointer = self.parse_expression(founded_token_pointer)
+
+            if self.compare_types("RIGHT_PARENTHESIS", founded_token_pointer):
+                sub_tree.add_node(self.create_node(founded_token_pointer))
                 founded_token_pointer += 1
-            else:
-                self.calculate_error(founded_token_pointer)
+
+                if check_parse(sub_tree_aux):
+
+                    founded_token_pointer = new_founded_token_pointer
+                    sub_tree.add_node(sub_tree_aux)
+                return sub_tree, founded_token_pointer
 
         if self.compare_types("INTEGER", founded_token_pointer) or self.compare_types("IDENTIFIER",
                                                                                       founded_token_pointer):
 
             sub_tree.add_node(self.create_node(founded_token_pointer))
             founded_token_pointer += 1
-            while self.compare_types("OPERATOR", founded_token_pointer):
+            while self.compare_types("OPERATOR", founded_token_pointer) or self.compare_types("RIGHT_PARENTHESIS",
+                                                                                              founded_token_pointer):
 
                 sub_tree.add_node(self.create_node(founded_token_pointer))
                 founded_token_pointer += 1
+
+                if self.compare_types("OPERATOR", founded_token_pointer):
+                    sub_tree.add_node(self.create_node(founded_token_pointer))
+                    founded_token_pointer += 1
+
+                if self.compare_types("LEFT_PARENTHESIS", founded_token_pointer):
+                    sub_tree.add_node(self.create_node(founded_token_pointer))
+                    print("_WHILE_FACTOR_")
+                    founded_token_pointer += 1
+
+                    sub_tree_aux, new_founded_token_pointer = self.parse_expression(founded_token_pointer)
+
+                    if check_parse(sub_tree_aux):
+                        founded_token_pointer = new_founded_token_pointer
+                        sub_tree.add_node(sub_tree_aux)
+
+                    return sub_tree, founded_token_pointer
+
                 if self.compare_types("INTEGER", founded_token_pointer) or self.compare_types("IDENTIFIER",
                                                                                               founded_token_pointer):
                     sub_tree.add_node(self.create_node(founded_token_pointer))
@@ -179,12 +218,11 @@ class SintaxAnalyser:
                 else:
                     self.calculate_error(founded_token_pointer)
                     return [], -1
+            print("POINTER: " + str(founded_token_pointer))
             return sub_tree, founded_token_pointer
+
         self.calculate_error(founded_token_pointer)
         return [], -1
-
-    def parse_factor(self, founded_token_pointer):
-        pass
 
     def parse_print(self, founded_token_pointer):
         sub_tree = PrintProductionNode("PRINT_PRODUCTION", "PRINT_PRODUCTION", [])
@@ -228,6 +266,10 @@ class SintaxAnalyser:
             node = IntegerNode(token_type, token_value, [])
         elif token_type == "OPERATOR":
             node = OperatorNode(token_type, token_value, [])
+        elif token_type == "LEFT_PARENTHESIS":
+            node = LeftParenthesisNode(token_type, token_value, [])
+        elif token_type == "RIGHT_PARENTHESIS":
+            node = RightParenthesisNode(token_type, token_value, [])
         elif token_type == "PRINT":
             node = PrintNode(token_type, token_value, [])
         return node
