@@ -1,4 +1,5 @@
 from src.main.python.edu.tec.ic5710.AbstractSyntaxTree import *
+from src.main.python.edu.tec.ic5710.SemanticAnalyser import *
 
 
 def check_parse(sub_tree):
@@ -30,9 +31,13 @@ class SintaxAnalyser:
         if self.parse_program_root_node(founded_token_pointer):
 
             self.print_abstract_syntax_tree()
-            # semantic_analyser = SemanticAnalyser(self.abstract_syntax_tree)
-            # semantic_analysis_report = semantic_analyser.analyse_semantics()
+            semantic_analysis = SemanticAnalyser(self.abstract_syntax_tree)
+            semantic_analysis_report = semantic_analysis.check()
 
+            if type(semantic_analysis_report) != str:
+                return
+            else:
+                print(semantic_analysis_report)
         else:
             self.generate_error()
 
@@ -220,6 +225,7 @@ class SintaxAnalyser:
                 else:
                     self.calculate_error(founded_token_pointer)
                     return [], -1
+
             print("POINTER: " + str(founded_token_pointer))
             return sub_tree, founded_token_pointer
 
@@ -241,6 +247,7 @@ class SintaxAnalyser:
                     founded_token_pointer += 1
                     print("Sub_tree: " + str(sub_tree))
                     return sub_tree, founded_token_pointer
+
         self.calculate_error(founded_token_pointer)
         return [], -1
 
