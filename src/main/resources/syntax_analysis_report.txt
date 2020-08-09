@@ -1,0 +1,107 @@
+ABSTRACT SYNTAX TREE: 
+
+[ PROGRAM_ROOT_NODE ]
+|---> ( ASSIGNATION ) ( ASSIGNATION ) ( ASSIGNATION ) ( PRINT_PRODUCTION ) 
+
+[ ASSIGNATION ]
+|---> ( IDENTIFIER ) ( EXPRESSION ) 
+
+[ ASSIGNATION ]
+|---> ( IDENTIFIER ) ( EXPRESSION ) 
+
+[ ASSIGNATION ]
+|---> ( IDENTIFIER ) ( EXPRESSION ) 
+
+[ PRINT_PRODUCTION ]
+|---> ( PRINT ) ( IDENTIFIER ) 
+
+[ IDENTIFIER ]
+|---> 
+
+[ EXPRESSION ]
+|---> ( FACTOR ) 
+
+[ IDENTIFIER ]
+|---> 
+
+[ EXPRESSION ]
+|---> ( FACTOR ) 
+
+[ IDENTIFIER ]
+|---> 
+
+[ EXPRESSION ]
+|---> ( FACTOR ) 
+
+[ PRINT ]
+|---> 
+
+[ IDENTIFIER ]
+|---> 
+
+[ FACTOR ]
+|---> ( INTEGER ) 
+
+[ FACTOR ]
+|---> ( INTEGER ) ( OPERATOR ) ( LEFT_PARENTHESIS ) ( EXPRESSION ) 
+
+[ FACTOR ]
+|---> ( IDENTIFIER ) ( OPERATOR ) ( IDENTIFIER ) 
+
+[ INTEGER ]
+|---> 
+
+[ INTEGER ]
+|---> 
+
+[ OPERATOR ]
+|---> 
+
+[ LEFT_PARENTHESIS ]
+|---> 
+
+[ EXPRESSION ]
+|---> ( FACTOR ) 
+
+[ IDENTIFIER ]
+|---> 
+
+[ OPERATOR ]
+|---> 
+
+[ IDENTIFIER ]
+|---> 
+
+[ FACTOR ]
+|---> ( LEFT_PARENTHESIS ) ( INTEGER ) ( OPERATOR ) ( INTEGER ) ( RIGHT_PARENTHESIS ) ( OPERATOR ) ( IDENTIFIER ) ( RIGHT_PARENTHESIS ) ( OPERATOR ) ( INTEGER ) 
+
+[ LEFT_PARENTHESIS ]
+|---> 
+
+[ INTEGER ]
+|---> 
+
+[ OPERATOR ]
+|---> 
+
+[ INTEGER ]
+|---> 
+
+[ RIGHT_PARENTHESIS ]
+|---> 
+
+[ OPERATOR ]
+|---> 
+
+[ IDENTIFIER ]
+|---> 
+
+[ RIGHT_PARENTHESIS ]
+|---> 
+
+[ OPERATOR ]
+|---> 
+
+[ INTEGER ]
+|---> 
+
