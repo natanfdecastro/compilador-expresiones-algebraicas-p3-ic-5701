@@ -1,5 +1,6 @@
+import os
 import re  # Biblioteca que maneja regex de Python
-
+from src.main.python.edu.tec.ic5710.configuration import NEW_PATH
 
 class Scanner:
 
@@ -30,13 +31,11 @@ class Scanner:
         self.error = False
 
         self.find_tokens()
-        self.show_tokens()
+        #self.show_tokens()
 
     # Es necesario comentar
     def find_tokens(self):
 
-        # Imprime el programa ingresado.
-        print(self.program)
         # Prepara la gramatica para hacer match
         self.grammar = re.compile(self.grammar)
 
@@ -82,3 +81,25 @@ class Scanner:
 
         # Useful comment
         print()
+
+    def create_lexical_analysis_report(self):
+        print("\nETAPA ANALISIS LEXICO: COMPLETADA CORRECTAMENTE")
+        try:
+            file = open(NEW_PATH + '/lexical_analysis_report.txt', 'w')
+            file.close()
+
+            file = open(NEW_PATH + '/lexical_analysis_report.txt', 'a')
+            file.write("FOUNDED TOKENS LIST: \n\n")
+
+            count = 0
+            for token in self.founded_tokens:
+                file.write(str(count) + " " + str(token) + "\n")
+                count += 1
+
+            file.close()
+
+            print(">>> NUEVO REPORTE DE ANALISIS LEXICO CREADO")
+
+        except:
+            print(">>> ERROR GENERANDO REPORTE DE ANALISIS LEXICO")
+
