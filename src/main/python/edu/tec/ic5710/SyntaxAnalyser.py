@@ -1,5 +1,6 @@
 from src.main.python.edu.tec.ic5710.AbstractSyntaxTree import *
 from src.main.python.edu.tec.ic5710.SemanticAnalyser import *
+from src.main.python.edu.tec.ic5710.configuration import NEW_PATH
 
 
 def check_parse(sub_tree):
@@ -30,14 +31,13 @@ class SintaxAnalyser:
 
         if self.parse_program_root_node(founded_token_pointer):
 
-            self.print_abstract_syntax_tree()
-            semantic_analysis = SemanticAnalyser(self.abstract_syntax_tree)
-            semantic_analysis_report = semantic_analysis.check()
+            #self.print_abstract_syntax_tree()
+            self.create_syntax_analysis_report()
 
-            if type(semantic_analysis_report) != str:
-                return
-            else:
-                print(semantic_analysis_report)
+            semantic_analysis = SemanticAnalyser(self.abstract_syntax_tree)
+            semantic_analysis.check()
+            semantic_analysis.create_lexical_analysis_report()
+
         else:
             self.generate_error()
 
@@ -61,6 +61,7 @@ class SintaxAnalyser:
             self.calculate_error(founded_token_pointer)
             return False
 
+    #TODO Realizar un raise en vez de un print.
     def generate_error(self):
         tracking = ""
         syntax_error_message = "Invalid Sintax\n"
@@ -104,7 +105,6 @@ class SintaxAnalyser:
                     succesful_parse = True
 
         if succesful_parse:
-            print(sub_tree)
             return sub_tree, founded_token_pointer
         else:
             self.calculate_error(founded_token_pointer)
@@ -121,7 +121,7 @@ class SintaxAnalyser:
 
         sub_tree.add_node(self.create_node(founded_token_pointer))
         founded_token_pointer += 1
-        print("_Declaration_")
+
         sub_tree_aux, new_founded_token_pointer = self.parse_assignation(founded_token_pointer)
 
         if check_parse(sub_tree_aux):
@@ -145,7 +145,6 @@ class SintaxAnalyser:
                 sub_tree_aux, new_founded_token_pointer = self.parse_expression(founded_token_pointer)
 
                 if check_parse(sub_tree_aux):
-                    print("__SUCCESS__")
                     founded_token_pointer = new_founded_token_pointer
                     sub_tree.add_node(sub_tree_aux)
                     if self.compare_types("SEMI_COLON", founded_token_pointer):
@@ -157,7 +156,6 @@ class SintaxAnalyser:
 
     def parse_expression(self, founded_token_pointer):
 
-        print("_Expression_")
         sub_tree = ExpressionNode("EXPRESSION", "EXPRESSION", [])
 
         sub_tree_aux, new_founded_token_pointer = self.parse_factor(founded_token_pointer)
@@ -169,7 +167,6 @@ class SintaxAnalyser:
         return sub_tree, founded_token_pointer
 
     def parse_factor(self, founded_token_pointer):
-        print("_FACTOR_")
         sub_tree = FactorNode("FACTOR", "FACTOR", [])
 
         if self.compare_types("LEFT_PARENTHESIS", founded_token_pointer):
@@ -204,13 +201,11 @@ class SintaxAnalyser:
 
                 if self.compare_types("LEFT_PARENTHESIS", founded_token_pointer):
                     sub_tree.add_node(self.create_node(founded_token_pointer))
-                    print("_WHILE_FACTOR_")
                     founded_token_pointer += 1
 
                     sub_tree_aux, new_founded_token_pointer = self.parse_expression(founded_token_pointer)
 
                     if check_parse(sub_tree_aux):
-                        print("_HERE_")
                         founded_token_pointer = new_founded_token_pointer
                         if self.compare_types("SEMI_COLON", founded_token_pointer+1):
                             founded_token_pointer += 1
@@ -226,7 +221,6 @@ class SintaxAnalyser:
                     self.calculate_error(founded_token_pointer)
                     return [], -1
 
-            print("POINTER: " + str(founded_token_pointer))
             return sub_tree, founded_token_pointer
 
         self.calculate_error(founded_token_pointer)
@@ -245,16 +239,12 @@ class SintaxAnalyser:
 
                 if self.compare_types("SEMI_COLON", founded_token_pointer):
                     founded_token_pointer += 1
-                    print("Sub_tree: " + str(sub_tree))
                     return sub_tree, founded_token_pointer
 
         self.calculate_error(founded_token_pointer)
         return [], -1
 
     def compare_types(self, token_type, founded_token_pointer):
-        print(">>> Compare_: " + str(token_type) + " " + str(founded_token_pointer) + " " + self.founded_tokens[
-            founded_token_pointer][0] + " " + self.founded_tokens[founded_token_pointer][1])
-        print("\n")
 
         if founded_token_pointer < self.founded_tokens_len:
             if self.founded_tokens[founded_token_pointer][0] == token_type:
@@ -288,7 +278,6 @@ class SintaxAnalyser:
 
         abstract_syntax_tree_list = [self.abstract_syntax_tree]
         str_abstract_syntax_tree = ""
-        print(len(abstract_syntax_tree_list))
         while abstract_syntax_tree_list:
 
             str_abstract_syntax_tree += "[ " + abstract_syntax_tree_list[0].node_type + " ]" + "\n|---> "
@@ -300,7 +289,32 @@ class SintaxAnalyser:
             str_abstract_syntax_tree += "\n\n"
             abstract_syntax_tree_list = abstract_syntax_tree_list[1:]
 
-        print("ABSTRACT SYNTAX TREE: \n")
-        print(str_abstract_syntax_tree)
 
 
+    def create_syntax_analysis_report(self):
+        print("\nETAPA ANALISIS SINTACTICO: COMPLETADA CORRECTAMENTE")
+        try:
+            file = open(NEW_PATH + '/syntax_analysis_report.txt', 'w')
+
+            abstract_syntax_tree_list = [self.abstract_syntax_tree]
+            str_abstract_syntax_tree = "ABSTRACT SYNTAX TREE: \n\n"
+
+            while abstract_syntax_tree_list:
+
+                str_abstract_syntax_tree += "[ " + abstract_syntax_tree_list[0].node_type + " ]" + "\n|---> "
+
+                for child in abstract_syntax_tree_list[0].children_nodes:
+                    str_abstract_syntax_tree += "( " + child.node_type + " )" + " "
+                    abstract_syntax_tree_list += [child]
+
+                str_abstract_syntax_tree += "\n\n"
+                abstract_syntax_tree_list = abstract_syntax_tree_list[1:]
+
+            file.write(str_abstract_syntax_tree)
+
+            file.close()
+
+            print(">>> NUEVO REPORTE DE ANALISIS SINTACTICO LEXICO CREADO")
+
+        except:
+            print(">>> ERROR GENERANDO REPORTE DE ANALISIS SINTACTICO")
