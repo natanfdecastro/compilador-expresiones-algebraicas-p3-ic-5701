@@ -2,6 +2,7 @@ import os
 import re  # Biblioteca que maneja regex de Python
 from src.main.python.edu.tec.ic5710.configuration import NEW_PATH
 
+
 class Scanner:
 
     def __init__(self, program):
