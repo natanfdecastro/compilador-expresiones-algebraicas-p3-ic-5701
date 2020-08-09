@@ -64,7 +64,7 @@ class FactorNode(AbstractSyntaxTree):
         AbstractSyntaxTree.__init__(self, node_type, node_value, children_nodes)
 
     def visit(self, semantic_checker):
-        return semantic_checker.visit_expression_node(self)
+        return semantic_checker.visit_factor_node(self)
 
 
 class IdentifierNode(AbstractSyntaxTree):
